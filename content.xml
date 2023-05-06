@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<content id="RelationHaggling" enabled="true" name="RelationHaggling" description="Player can improve relations via bribes by speaking to managers of pirate stations." author="iforgotmysocks" version="100" date="2019-11-30" save="false">
-  <text language="7" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
-  <text language="33" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
-  <text language="34" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
-  <text language="39" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" /> 
-  <text language="44" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
-  <text language="49" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
-  <text language="55" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
-  <text language="81" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
-  <text language="82" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
-  <text language="86" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" /> 
-  <text language="88" name="RelationHaggling" description="RelationHaggling" author="iforgotmysocks" />
+<content id="RelationHaggling" enabled="true" name="RelationHaggling"
+	description="Player can improve relations via bribes by speaking to managers of pirate stations."
+	author="iforgotmysocks" version="100" date="2019-11-30" save="false">
+	<text language="7" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="33" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="34" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="39" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="44" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="49" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="55" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="81" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="82" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="86" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
+	<text language="88" name="RelationHaggling" description="RelationHaggling"
+		author="iforgotmysocks" />
 </content>
