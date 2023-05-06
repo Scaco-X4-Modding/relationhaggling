@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Anmerkung:
+Zeile 193/194 kann der Wert gesetzt werden auf den der Ruf zurückgesetzt wird. Zusätzlich muss dieser wert auch in Zeile 202 angepasst werden. Dieser bestimmt wann der Dialog aufgerufen werden kann.
+Zeile 197 können Fraktionen hinzugefügt werden. Einfach ", faction.[ID]" anfügen. IDs unten in den Kommentaren.
+
+Entwicklerkommentar zu den Rufstufen:
+UI value mapping (analogously for negative values):
+  1.0       = 30
+  0.32      = 25
+  0.1       = 20
+  0.032     = 15
+  0.01      = 10
+  0.0032    = 5
+These values are fixed. Between them, logarithmic interpolation is used. Approximate formulas:
+  uivalue = 10 * log10(relation * 1000)
+  relation = 10^(uivalue / 10) / 1000
+Between -0.0032 and +0.0032 (UI -5...+5) linear interpolation is used, and 0.00064 equates to one UI value step.
+ -->
+<!-- Faction-IDs Vanilla
+alliance			-> Bündnis der Worte
+antigone			-> Republik Antigone
+argon				-> Argonische Föderation
+buccaneers			-> Korsaren des Herzogs
+hatikvah			-> Freie Liga von Hatikvah
+holyorder			-> Heiliger Orden des Pontifex
+holyorderfanatic	-> Getreue des Heiligen Ordens
+khaak				-> Kha'ak
+ministry			-> Teladi-Finanzministerium
+paranid				-> Gottesreich von Paranid
+scaleplate			-> Pakt von Grüne Schuppe
+teladi				-> Teladi-Unternehmen
+trinity				-> Reich der Dreieinigkeit
+xenon				-> Xenon
+ -->
+<!-- Faction-IDs Pirate
+loanshark			-> Vigor-Syndikat
+scavenger			-> Sturmflut-Streicher
+ -->
+<!-- Faction-IDs Split
+court				-> Rat der Züglerinnen
+fallensplit			-> Gefallene Familien
+freesplit			-> Freie Familien
+split				-> Patriarchat Zyarth
+ -->
+<!-- Faction-IDs Terran
+pioneers			-> Segaris-Pioniere
+terran				-> Terranisches Protektorat
+yaki				-> Yaki
+ -->
+<!-- Faction-IDs Boron
+boron				-> Königinnenreich von Boron
+ -->
+
+<mdscript name="RelationHaggling" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="E:\Modding\xsds\comb\md.xsd">
+  <cues>
+    <cue name="RH_Main_Contact_Handler" instantiate="true">
+      <conditions>
+        <check_any>
+          <event_conversation_started conversation="default"/>
+          <event_conversation_returned_to_section section="default"/>
+        </check_any>
+        <check_value value="event.object.controlpost == controlpost.manager"/>
+        <check_value value="[faction.scaleplate, faction.hatikvah].indexof.{event.object.owner}"/>
+      </conditions>
+      <actions>
+        <do_if value="@md.ExtendedConversationMenu.Main.exists">
+          <set_value name="md.ExtendedConversationMenu.Main.$convOptions.$relationhaggling" exact="table[$signalCue = md.RelationHaggling.RH_Main_ConversationExtentionManagerSupport]" />
+        </do_if>
+        <do_else>
+          <signal_cue_instantly cue="RH_Main_ConversationExtentionManagerSupport"/>
+        </do_else>
+      </actions>
+    </cue>
+
+    <cue name="RH_Main_ConversationExtentionManagerSupport" instantiate="true">
+      <conditions>
+        <event_cue_signalled/>
+      </conditions>
+      <actions>
+        <add_player_choice_sub text="'Haggle over relations'" section="RH_Main_InContact"/>
+      </actions>
+    </cue>
+
+    <cue name="RH_Main_InContact_Handler" instantiate="true">
+      <conditions>
+        <check_any>
+          <event_conversation_next_section section="RH_Main_InContact"/>
+          <event_conversation_returned_to_section section="RH_Main_InContact"/>
+        </check_any>
+      </conditions>
+      <actions>
+        <add_player_choice_sub text="'Improve relations with cash'" section="RH_Main_SelectFaction"/>
+        <add_player_choice_return position="bottom_right" text="'Back'"/>
+      </actions>
+    </cue>
+
+    <cue name="RH_War_Contact_Handler" instantiate="true">
+      <conditions>
+        <check_any>
+          <event_conversation_started conversation="default"/>
+          <event_conversation_returned_to_section section="default"/>
+        </check_any>
+        <check_value value="event.object.type == entitytype.factionrepresentative"/>
+        <check_value value="event.object.owner.relationto.{faction.player} ge 0.1"/>
+      </conditions>
+      <actions>
+        <do_if value="@md.ExtendedConversationMenu.Main.exists">
+          <set_value name="md.ExtendedConversationMenu.Main.$convOptions.$relationhagglingfuzzy" exact="table[$signalCue = md.RelationHaggling.RH_War_ConversationExtentionManagerSupport]" />
+        </do_if>
+        <do_else>
+          <signal_cue_instantly cue="RH_War_ConversationExtentionManagerSupport"/>
+        </do_else>
+      </actions>
+    </cue>
+
+    <cue name="RH_War_ConversationExtentionManagerSupport" instantiate="true">
+      <conditions>
+        <event_cue_signalled/>
+      </conditions>
+      <actions>
+        <add_player_choice_sub text="'I require help with a delicate matter'" section="RH_War_InContact"/>
+      </actions>
+    </cue>
+
+    <cue name="RH_War_InContact_Handler" instantiate="true">
+      <conditions>
+        <check_any>
+          <event_conversation_next_section section="RH_War_InContact"/>
+          <event_conversation_returned_to_section section="RH_War_InContact"/>
+        </check_any>
+      </conditions>
+      <actions>
+        <show_help custom="'This kind of commitment to another faction will turn every other faction hostile towards you and your new ally. Think about it!'" duration="10s"/>
+        <add_player_choice_sub text="'We need to bond together against them all!'" section="RH_War_TotalWar"/>
+        <add_player_choice_return position="bottom_right" text="'Back'"/>
+      </actions>
+    </cue>
+
+    <cue name="RH_War_TotalWar_Handler" instantiate="true">
+      <conditions>
+        <check_any>
+          <event_conversation_next_section section="RH_War_TotalWar"/>
+          <event_conversation_returned_to_section section="RH_War_TotalWar"/>
+        </check_any>
+      </conditions>
+      <actions>
+        <include_actions ref="GetValidFactions"/>
+        <do_for_each in="$factions">
+          <do_if value="event.object.owner == loop.element or loop.element == faction.player">
+            <continue/>
+          </do_if>
+          <set_faction_relation faction="event.object.owner" otherfaction="loop.element" value="-0.6"/>
+          <set_faction_relation faction="loop.element" otherfaction="event.object.owner" value="-0.6"/>
+
+          <do_if value="(faction.player).relationto.{loop.element} ge -0.6">
+            <set_faction_relation faction="faction.player" otherfaction="loop.element" value="-0.6"/>
+            <set_faction_relation faction="loop.element" otherfaction="faction.player" value="-0.6"/>
+          </do_if>
+        </do_for_each>
+
+        <do_if value="(faction.player).relationto.{event.object.owner} lt 0.6">
+          <set_faction_relation faction="faction.player" otherfaction="event.object.owner" value="0.6"/>
+          <set_faction_relation faction="event.object.owner" otherfaction="faction.player" value="0.6"/>
+        </do_if>
+        <set_faction_mood type="aggression" level="moodlevel.high" faction="event.object.owner"/>
+      </actions>
+    </cue>
+
+    <library name="GetValidFactions">
+      <actions>
+        <set_value name="$factions" exact="[]"/>
+        <get_factions_by_tag tag="tag.plunder" result="$factions"/>
+
+        <do_for_each in="lookup.faction.list">
+          <set_value name="$relationValue" exact="0"/>
+          <do_if value="loop.element.willclaimspace or loop.element.iseconomic">
+            <append_to_list name="$factions" exact="loop.element"/>
+          </do_if>
+          <do_else>
+            <do_if value="$factions.indexof.{loop.element} == -1">
+            </do_if>
+          </do_else>
+        </do_for_each>
+      </actions>
+    </library>
+
+    <cue name="RH_Main_SelectFaction_Handler" instantiate="true">
+      <conditions>
+        <check_any>
+          <event_conversation_next_section section="RH_Main_SelectFaction"/>
+          <event_conversation_returned_to_section section="RH_Main_SelectFaction"/>
+        </check_any>
+      </conditions>
+      <actions>
+        <do_if value="event.param2 == 'previous'">
+          <set_value name="$page" operation="subtract"/>
+        </do_if>
+        <do_elseif value="event.param2 == 'next'">
+          <set_value name="$page" operation="add"/>
+        </do_elseif>
+        <do_else>
+          <set_value name="$page" exact="0"/>
+        </do_else>
+
+        <do_if value="@event.param2.{3} != null and @event.param2.{4} != null">
+          <reward_player money="(event.param2.{4})Cr * -1"/>
+          <set_faction_relation faction="faction.player" otherfaction="event.param2.{2}" value="-0.032"/>
+          <set_faction_relation faction="event.param2.{2}" otherfaction="faction.player" value="-0.032"/>
+        </do_if>
+
+        <set_value name="$validFactions" exact="[faction.antigone, faction.argon, faction.holyorder, faction.ministry, faction.paranid, faction.teladi, faction.hatikvah]"/>
+        <include_actions ref="Helper_AddSplitFactions"/>
+        <include_actions ref="AddCraddleFactions"/>
+        <do_all exact="$validFactions.count" counter="$i" reverse="true">
+          <do_if value="$validFactions.{$i}.relationto.{faction.player} gt -0.032">
+            <remove_value name="$validFactions.{$i}"/>
+          </do_if>
+        </do_all>
+        <do_all exact="4" counter="$i">
+          <set_value name="$actuallSiteItemId" exact="$i + (4 * $page)"/>
+          <do_if value="$validFactions.count lt $actuallSiteItemId">
+            <break/>
+          </do_if>
+          <set_value name="$price" exact="0"/>
+          <set_value name="$faction" exact="$validFactions.{$actuallSiteItemId}"/>
+          <set_value name="$relation" exact="$faction.relationto.{faction.player}"/>
+          <include_actions ref="RH_Main_CalculatePrice"/>
+          <do_if value="$faction != null">
+            <do_if value="player.money gt ($price)Cr">
+              <add_player_choice text="'%1 (%2M)'.[$faction.name, ($price / 1000000)i]" position="$i" choiceparam="[$actuallSiteItemId, $faction, $relation, $price]" section="RH_Main_SelectFaction"/>
+            </do_if>
+            <do_else>
+              <add_player_choice text="'%1 (%2M)'.[$faction.name, ($price / 1000000)i]" position="$i" selectable="false" choiceparam="[$actuallSiteItemId, $faction, $relation, $price]" section="RH_Main_SelectFaction"/>
+            </do_else>
+          </do_if>
+        </do_all>
+
+        <do_if value="$page == 0">
+          <add_player_choice_return position="bottom_right" text="'Back'"/>
+        </do_if>
+        <do_else>
+          <add_player_choice text="'Previous page'" choiceparam="'previous'" position="bottom_right" section="RH_Main_SelectFaction"/>
+        </do_else>
+        <do_if value="$validFactions.count gt 4">
+          <add_player_choice text="'Next page'" choiceparam="'next'" position="right" section="RH_Main_SelectFaction"/>
+        </do_if>
+        <remove_value name="$relation"/>
+        <remove_value name="$faction"/>
+        <remove_value name="$factions"/>
+        <remove_value name="$actuallSiteItemId"/>
+      </actions>
+    </cue>
+
+    <library name="Helper">
+      <cues>
+        <library name="Helper_AddSplitFactions">
+          <actions>
+            <do_if value="@md.Setup_DLC_Split.Setup != null">
+              <append_to_list name="$validFactions" exact="faction.freesplit"/>
+              <append_to_list name="$validFactions" exact="faction.split"/>
+            </do_if>
+          </actions>
+        </library>
+
+        <library name="AddCraddleFactions">
+          <actions>
+            <do_if value="@md.Setup_DLC_Terran.Setup != null">
+              <append_to_list name="$validFactions" exact="@faction.pioneers"/>
+              <append_to_list name="$validFactions" exact="@faction.terran"/>
+              <append_to_list name="$validFactions" exact="@faction.yaki"/>
+            </do_if>
+          </actions>
+        </library>
+		
+	    <library name="AddBoronFactions">
+          <actions>
+            <do_if value="@md.Setup_DLC_Boron.Setup != null">
+              <append_to_list name="$validFactions" exact="@faction.boron"/>
+            </do_if>
+          </actions>
+        </library>
+      </cues>
+    </library>
+
+    <library name="RH_Main_CalculatePrice">
+      <actions>
+        <do_if value="$relation le -0.0032 and $relation gt -0.01">
+          <set_value name="$price" exact="2000000"/>
+        </do_if>
+        <do_if value="$relation le -0.01 and $relation gt -0.032">
+          <set_value name="$price" exact="7000000"/>
+        </do_if>
+        <do_elseif value="$relation le -0.032 and $relation gt -0.1">
+          <set_value name="$price" exact="20000000"/>
+        </do_elseif>
+        <do_elseif value="$relation le -0.1 and $relation gt -0.32">
+          <set_value name="$price" exact="50000000"/>
+        </do_elseif>
+        <do_elseif value="$relation le -0.32">
+          <set_value name="$price" exact="100000000"/>
+        </do_elseif>
+      </actions>
+    </library>
+  </cues>
+</mdscript>
