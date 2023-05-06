@@ -69,9 +69,7 @@ yaki				-> Yaki
 boron				-> Königinnenreich von Boron
  -->
 
-<mdscript name="RelationHaggling"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="E:\Modding\xsds\comb\md.xsd">
+<mdscript name="RelationHaggling">
 	<cues>
 		<cue name="RH_Main_Contact_Handler" instantiate="true">
 			<conditions>
