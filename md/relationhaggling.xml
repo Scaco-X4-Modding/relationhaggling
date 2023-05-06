@@ -2,14 +2,16 @@
 <!-- Anmerkung:
 Zeile 193/194 kann der Wert gesetzt werden auf den der Ruf
 zurückgesetzt wird. Zusätzlich muss dieser wert auch in Zeile 202 angepasst
-werden. Dieser bestimmt wann der Dialog aufgerufen werden kann.
+werden. Dieser bestimmt wann der Dialog
+aufgerufen werden kann.
 Zeile 197
 können Fraktionen hinzugefügt werden. Einfach ", faction.[ID]" anfügen. IDs
 unten in den Kommentaren.
 
 Entwicklerkommentar zu den Rufstufen:
 UI value
-mapping (analogously for negative values):
+mapping
+(analogously for negative values):
   1.0       = 30
   0.32      = 25
 0.1       = 20
@@ -17,30 +19,27 @@ mapping (analogously for negative values):
   0.01      = 10
   0.0032    = 5
 These
-values are fixed. Between them, logarithmic interpolation is used. Approximate
+values are fixed. Between them, logarithmic
+interpolation is used. Approximate
 formulas:
   uivalue = 10 * log10(relation * 1000)
   relation = 10^(uivalue /
 10) / 1000
 Between -0.0032 and +0.0032 (UI -5...+5) linear interpolation is
-used, and 0.00064 equates to one UI value step.
+used,
+and 0.00064 equates to one UI value step.
  -->
 <!-- Faction-IDs Vanilla
 alliance			-> Bündnis der Worte
-antigone			->
-Republik Antigone
+antigone			-> Republik Antigone
 argon				-> Argonische Föderation
-buccaneers			-> Korsaren
-des Herzogs
+buccaneers			-> Korsaren des Herzogs
 hatikvah			-> Freie Liga von Hatikvah
-holyorder			-> Heiliger
-Orden des Pontifex
+holyorder			-> Heiliger Orden des Pontifex
 holyorderfanatic	-> Getreue des Heiligen Ordens
-khaak				->
-Kha'ak
+khaak				-> Kha'ak
 ministry			-> Teladi-Finanzministerium
-paranid				-> Gottesreich von
-Paranid
+paranid				-> Gottesreich von Paranid
 scaleplate			-> Pakt von Grüne Schuppe
 teladi				-> Teladi-Unternehmen
 trinity				-> Reich der Dreieinigkeit
@@ -48,21 +47,17 @@ xenon				-> Xenon
  -->
 <!-- Faction-IDs Pirate
 loanshark			-> Vigor-Syndikat
-scavenger			->
-Sturmflut-Streicher
+scavenger			-> Sturmflut-Streicher
  -->
 <!-- Faction-IDs Split
 court				-> Rat der Züglerinnen
-fallensplit			->
-Gefallene Familien
+fallensplit			-> Gefallene Familien
 freesplit			-> Freie Familien
-split				-> Patriarchat
-Zyarth
+split				-> Patriarchat Zyarth
  -->
 <!-- Faction-IDs Terran
 pioneers			-> Segaris-Pioniere
-terran				->
-Terranisches Protektorat
+terran				-> Terranisches Protektorat
 yaki				-> Yaki
  -->
 <!-- Faction-IDs Boron
@@ -327,13 +322,11 @@ boron				-> Königinnenreich von Boron
 
 		<library name="Helper">
 			<cues>
-				<library name="Helper_AddSplitFactions">
+				<library name="AddSplitFactions">
 					<actions>
 						<do_if value="@md.Setup_DLC_Split.Setup != null">
-							<append_to_list name="$validFactions"
-								exact="faction.freesplit" />
-							<append_to_list name="$validFactions"
-								exact="faction.split" />
+							<append_to_list name="$validFactions" exact="faction.freesplit" />
+							<append_to_list name="$validFactions" exact="faction.split" />
 						</do_if>
 					</actions>
 				</library>
@@ -341,12 +334,9 @@ boron				-> Königinnenreich von Boron
 				<library name="AddCraddleFactions">
 					<actions>
 						<do_if value="@md.Setup_DLC_Terran.Setup != null">
-							<append_to_list name="$validFactions"
-								exact="@faction.pioneers" />
-							<append_to_list name="$validFactions"
-								exact="@faction.terran" />
-							<append_to_list name="$validFactions"
-								exact="@faction.yaki" />
+							<append_to_list name="$validFactions" exact="@faction.pioneers" />
+							<append_to_list name="$validFactions" exact="@faction.terran" />
+							<append_to_list name="$validFactions" exact="@faction.yaki" />
 						</do_if>
 					</actions>
 				</library>
@@ -354,13 +344,23 @@ boron				-> Königinnenreich von Boron
 				<library name="AddBoronFactions">
 					<actions>
 						<do_if value="@md.Setup_DLC_Boron.Setup != null">
-							<append_to_list name="$validFactions"
-								exact="@faction.boron" />
+							<append_to_list name="$validFactions" exact="@faction.boron" />
 						</do_if>
 					</actions>
 				</library>
+
+				<library name="AddPirateFactions">
+					<actions>
+						<do_if value="@md.Setup_DLC_Pirate.Setup != null">
+							<append_to_list name="$validFactions" exact="@faction.loanshark" />
+							<append_to_list name="$validFactions" exact="@faction.scavenger" />
+						</do_if>
+					</actions>
+				</library>
+
 			</cues>
 		</library>
+
 
 		<library name="RH_Main_CalculatePrice">
 			<actions>
